@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Get the external IP address
+ip=$(curl -s https://icanhazip.com)
+
+# Print the IP address
+if [[ -n "$ip" ]]; then
+
+echo "Seu IP externo é: $ip/$(curl -s https://ipinfo.io/ | jq -r .country)"
+else
+	echo "IP externo não encontrado"
+fi
+
+torip=$(proxychains4 -q curl -s https://icanhazip.com)
+
+# Print the Onion IP address
+if [[ -n "$torip" ]]; then
+
+	echo "Seu IP Onion é: $torip/$(proxychains4 -q curl -s https://ipinfo.io/ | jq -r .country)"
+else
+        echo "IP Onion indisponível"
+fi
+
+i2pip=$(proxychains4 -f /home/verbotron/conf_files/proxychains4alt.conf -q curl -s https://icanhazip.com)
+
+if [[ -n "$i2pip" ]]; then
+
+	echo "Seu IP I2P é: $i2pip/$(proxychains4 -f /home/verbotron/conf_files/proxychains4alt.conf -q curl -s https://ipinfo.io | jq -r .country)"
+else
+	echo "IP I2P indisponível"
+fi
