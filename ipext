@@ -1,31 +1,54 @@
 #!/bin/bash
 
-# Get the external IP address
-ip=$(curl -s https://icanhazip.com)
+#Clearnet IP vars
 
-# Print the IP address
-if [[ -n "$ip" ]]; then
+clear_ip=$(curl -s https://icanhazip.com)
+clear_country=$(whois ${clear_ip} | grep -i country | nl | grep 1 | awk '{print $3}')
 
-echo "Seu IP externo é: $ip/$(curl -s https://ipinfo.io/ | jq -r .country)"
+#Onion IP vars
+
+onion_ip=$(proxychains4 -q curl -s https://icanhazip.com)
+
+if [[ -z "${onion_ip}" ]]; then
+	echo""
 else
-	echo "IP externo não encontrado"
+	onion_country=$(whois ${onion_ip} | grep -i country | nl | grep 1 | awk '{print $3}')
 fi
 
-torip=$(proxychains4 -q curl -s https://icanhazip.com)
+#I2P IP vars
 
-# Print the Onion IP address
-if [[ -n "$torip" ]]; then
+i2p_ip=$(proxychains4 -f ${HOME}/conf_files/proxychains/proxychains4alt.conf -q curl -s https://icanhazip.com)
 
-	echo "Seu IP Onion é: $torip/$(proxychains4 -q curl -s https://ipinfo.io/ | jq -r .country)"
+if [[ -z "${i2p_ip}" ]]; then
+	echo ""
 else
-        echo "IP Onion indisponível"
+	i2p_country=$(whois ${i2p_ip} | grep -i country | nl | grep 1 | awk '{print $3}')
 fi
 
-i2pip=$(proxychains4 -f /home/verbotron/conf_files/proxychains4alt.conf -q curl -s https://icanhazip.com)
+echo "-------"
+echo "IP List"
+echo "-------"
 
-if [[ -n "$i2pip" ]]; then
+#Print Clearnet IP address
 
-	echo "Seu IP I2P é: $i2pip/$(proxychains4 -f /home/verbotron/conf_files/proxychains4alt.conf -q curl -s https://ipinfo.io | jq -r .country)"
+if [[ -n "${clear_ip}" ]]; then
+	echo "Clearnet IP: ${clear_ip}/${clear_country}"
 else
-	echo "IP I2P indisponível"
+	echo "Clearnet IP not available"
+fi
+
+#Print Onion IP address
+
+if [[ -n "${onion_ip}" ]]; then
+	echo "Onion IP: ${onion_ip}/${onion_country}"
+else
+	echo "Onion IP not available"
+fi
+
+#Print I2P address
+
+if [[ -n "${i2p_ip}" ]]; then
+	echo "I2P IP: ${i2p_ip}/${i2p_country}"
+else
+	echo "I2P IP not available"	
 fi
