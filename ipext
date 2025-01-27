@@ -10,7 +10,7 @@ clear_country=$(whois ${clear_ip} | grep -i country | nl | grep 1 | awk '{print 
 onion_ip=$(proxychains4 -q curl -s https://icanhazip.com)
 
 if [[ -z "${onion_ip}" ]]; then
-	echo""
+	echo ""
 else
 	onion_country=$(whois ${onion_ip} | grep -i country | nl | grep 1 | awk '{print $3}')
 fi
