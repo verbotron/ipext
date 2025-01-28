@@ -26,7 +26,7 @@ else
 fi
 
 echo "------------------------------"
-echo "         ipext v0.21"
+echo "         ipext v0.21          "
 echo "------------------------------"
 
 #Print Clearnet IP address
